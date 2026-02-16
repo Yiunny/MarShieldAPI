@@ -28,7 +28,16 @@ namespace MarShield.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User newUser)
         {
-            // Check trùng username (nếu cần kỹ hơn)
+            // 1. Check if username already exists
+            bool isExist = await _userService.CheckUserExistsAsync(newUser.Username);
+
+            if (isExist)
+            {
+                // return 400 Bad Request with error message
+                return BadRequest(new { message = "Tên đăng nhập này đã có người sử dụng!" });
+            }
+
+            // 2. If not exist, create new user
             await _userService.CreateAsync(newUser);
             return Ok(new { message = "Đăng ký thành công!", userId = newUser.Id });
         }

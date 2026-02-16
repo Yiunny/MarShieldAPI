@@ -48,6 +48,13 @@ namespace MarShield.API.Services
 
             return user; // Login successful
         }
+        // Check if a user exists by username
+        public async Task<bool> CheckUserExistsAsync(string username)
+        {
+            // Find if there is a user existence via CountDocuments
+            var count = await _usersCollection.CountDocumentsAsync(x => x.Username == username);
+            return count > 0;
+        }
     }
 }
 
